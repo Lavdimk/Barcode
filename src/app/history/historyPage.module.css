@@ -1,0 +1,141 @@
+.historyContainer {
+  margin: 20px;
+}
+
+.dateGroup {
+  margin-top: 24px;
+  border-radius: 8px;
+  background-color: #f4f4f4;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.dateSummary {
+  color: #333;
+}
+
+.invoiceBox {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.invoiceProduct {
+  margin-left: 12px;
+  font-size: 15px;
+}
+
+.invoiceTotal {
+  font-weight: bold;
+  color: #222;
+  font-size: 18px;
+}
+
+
+  .products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}
+
+.products-title {
+  margin: 0;
+}
+
+.product-search-input {
+  padding: 16px 45px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 280px;
+  font-size: 14px;
+  outline: none;
+  margin: 10px;
+}
+.deleteDayBtn {
+  background: transparent;
+  border: none;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+.deleteInvoiceBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.invoiceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.totalAmountGreen {
+  color: green;
+  font-weight: bold;
+  font-size: 18px
+}
+.invoiceNumber {
+  color: #333;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.totalAmountGreen {
+  color: green;
+  font-weight: bold;
+}
+
+.itemList {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.invoiceProduct {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.invoiceTable {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 14px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.invoiceTable th,
+.invoiceTable td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.invoiceTable th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+  color: #333;
+}
+
+.invoiceTable tr:last-child td {
+  border-bottom: none;
+}
+
+.invoiceTable tr:nth-child(even) {
+  background-color: #fcfcfc;
+}
+

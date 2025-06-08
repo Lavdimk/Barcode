@@ -1,0 +1,89 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background-color: #1f2937;
+  border-radius: 12px;
+  gap: 16px;
+  font-family: Arial, sans-serif;
+}
+
+.leftSide {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.links {
+  display: flex;
+  gap: 24px;
+}
+
+.link {
+  text-decoration: none;
+  color: #d1d5db;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #374151;
+  color: white;
+}
+
+.rightSide {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: #d1d5db;
+  font-size: 16px;
+}
+
+.addProductButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #5c5086;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addProductButton:hover {
+  background-color: #474063;
+}
+
+.date {
+  white-space: nowrap;
+}
+
+.notificationButton {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #d1d5db;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.notificationButton:hover {
+  background-color: #374151;
+}

@@ -2,24 +2,32 @@
   "name": "barcode",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build src",
+    "electron": "electron main.js",
+    "start": "concurrently \"npm run dev\" \"npm run electron\"",
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "lucide-react": "^0.511.0",
+    "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "react-spinners": "^0.17.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
+    "electron": "^36.3.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "prisma": "^6.8.2",
+    "typescript": "^5"
   }
 }
