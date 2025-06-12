@@ -13,6 +13,7 @@ model Product {
   name     String
   amount    Int
   price    Float
+  createdAt DateTime      @default(now())
 
  invoiceItems InvoiceItem[]
 }
@@ -22,7 +23,7 @@ model Invoice {
   id          Int           @id @default(autoincrement())
   createdAt   DateTime      @default(now())
   totalPrice  Float
-  items       InvoiceItem[]
+  items       InvoiceItem[] 
 }
 
 model InvoiceItem {

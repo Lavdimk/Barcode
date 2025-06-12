@@ -28,7 +28,7 @@ export default function Header() {
           <h1 className={styles.title}>Barcode</h1>
           <div className={styles.links}>
             <Link href="/" className={styles.link}>Shitje</Link>
-            <Link href="/dashboard" className={styles.link}>Kryefaqja</Link>
+            <Link href="/dashboard" className={styles.link}>Ballina</Link>
             <Link href="/products" className={styles.link}>Produkte</Link>
             <Link href="/history" className={styles.link}>Historiku</Link>
           </div>

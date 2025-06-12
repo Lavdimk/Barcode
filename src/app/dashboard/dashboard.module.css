@@ -1,21 +1,27 @@
 .wrapper {
   height: 85vh;
-  box-sizing: border-box;
-  margin: 0;
   padding: 20px;
+  box-sizing: border-box;
 }
 
-.grid {
+.topGrid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); 
-  grid-template-rows: 0.3fr 0.7fr;  
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  height: 100%;
+  margin-bottom: 30px;
+  height: 40%;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  height: 60%;
 }
 
 .card {
   border-radius: 5px;
-  padding: 30px;
+  padding: 20px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
@@ -23,25 +29,264 @@
   font-size: 20px;
   font-weight: 600;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.card1 {
-  grid-column: 1 / span 3;
-  grid-row: 1; 
-}
-.card2 {
-  grid-column: 4 / span 3;
-  grid-row: 1;
+  background: white;
 }
 
-.card3 {
-  grid-column: 1 / span 2;
-  grid-row: 2;
+.salesCard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.card4 {
-  grid-column: 3 / span 2;
-  grid-row: 2;
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+}
+
+.dropdown {
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.price {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #2ecc71;
+}
+
+.chartWrapper {
+  margin: 10px 0;
+  height: 50px;
+}
+
+.growth {
+  font-size: 14px;
+  color: #2ecc71;
+  display: flex;
+  align-items: center;
+}
+
+.upArrow {
+  color: #2ecc71;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.productPrice {
+  font-size: 36px;
+  color: #FFA500;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.productGrowth {
+  font-size: 14px;
+  color: #FFA500;
+  display: flex;
+  align-items: center;
+}
+
+.productUpArrow {
+  color: #FFA500;
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.allProductsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.allProductsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  color: #8e44ad;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.allProductsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.allProductsGrowth {
+  font-size: 14px;
+  color: #8e44ad;
+  display: flex;
+  align-items: center;
+}
+
+.allProductsArrow {
+  margin-right: 5px;
+  font-size: 16px;
+  color: #8e44ad;
+}
+
+.allProductsImage {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin: 10px 0;
+}
+
+.allProductsCount {
+  font-size: 42px;
+  font-weight: bold;
+  color: #8e44ad;
+  text-align: center;
+}
+.topProductsHeader {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
 }
 .card5 {
-  grid-column: 5 / span 2;
-  grid-row: 2;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.pieChartWrapper {
+  width: 100%;
+  height: 200px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+
+.card4 {
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+.switchWrapper {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.switchButton {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.activeSwitch {
+  background-color: #8e44ad;
+  color: white;
+  border-color: #bc68e1;
+}
+.controls select {
+  background-color: #4FADF7;
+  color: white;             
+  border: none;            
+  padding: 4px 8px;         
+  border-radius: 8px;      
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 5px rgba(79, 173, 247, 0.6);
+}
+
+.controls select:hover {
+  background-color: #3b8de0; 
+}
+
+.controls select:focus {
+  outline: none;
+}
+.dropdown {
+  background-color: #FFA500; 
+  color: white;            
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(255, 165, 0, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.dropdown:hover {
+  background-color: #e59400; 
+}
+
+.dropdown:focus {
+  outline: none;
 }
