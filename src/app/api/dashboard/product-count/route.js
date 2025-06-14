@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { applyCors } from '../../../helpers/cors'
 
 const prisma = new PrismaClient();
 
 export async function GET() {
-  await applyCors(req, res);
 
   const uniqueCount = await prisma.product.count({
     where: { amount: { gt: 0 } },

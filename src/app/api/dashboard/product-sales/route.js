@@ -1,11 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { startOfDay, subWeeks, subMonths, subYears, format, differenceInCalendarWeeks } from 'date-fns';
-import { applyCors } from '../../../helpers/cors'
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
-  await applyCors(req, res);
 
   const { searchParams } = new URL(req.url);
   const period = searchParams.get('period');

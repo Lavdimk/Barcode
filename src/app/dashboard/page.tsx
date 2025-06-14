@@ -19,7 +19,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTodayTotal = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/invoices`);
+        const res = await fetch(`/api/invoices`);
         if (!res.ok) throw new Error('Gabim gjatë marrjes së faturave');
         const data: Invoice[] = await res.json();
 

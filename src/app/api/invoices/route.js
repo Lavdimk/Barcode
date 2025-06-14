@@ -1,12 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server'
-import { applyCors } from '@/app/helpers/cors';
 
 
 const prisma = new PrismaClient();
 
 export async function POST(req) {
-  await applyCors(req, res);
   try {
     const body = await req.json();
     const { products, totalPrice } = body;
@@ -87,7 +85,6 @@ export async function POST(req) {
 
 
 export async function GET() {
-  await applyCors(req, res);
   try {
     const invoices = await prisma.invoice.findMany({
       orderBy: { createdAt: 'desc' },
@@ -108,7 +105,6 @@ export async function GET() {
   }
 }
 export async function DELETE(req) {
-  await applyCors(req, res);
   try {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get('date');

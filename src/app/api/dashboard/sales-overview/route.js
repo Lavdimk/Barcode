@@ -1,11 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import { applyCors } from '../../../helpers/cors'
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
-    await applyCors(req, res);
 
     const range = req.nextUrl.searchParams.get('range') ?? '7d';
     const today = new Date();

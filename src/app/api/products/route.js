@@ -1,13 +1,10 @@
 import { PrismaClient } from '@prisma/client'
-import { applyCors } from '@/app/helpers/cors'
 
 const prisma = new PrismaClient()
 
 export async function POST(req) {
-  await applyCors(req, res);
   try {
     const body = await req.json()
-    console.log('Request body:', body)
 
     const product = await prisma.product.create({
       data: {
@@ -25,7 +22,6 @@ export async function POST(req) {
   }
 }
 export async function GET(req) {
-  await applyCors(req, res);
   try {
     const { searchParams } = new URL(req.url);
     const barcode = searchParams.get('barcode');
@@ -59,7 +55,6 @@ export async function GET(req) {
 
 
 export async function DELETE(req) {
-  await applyCors(req, res);
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 

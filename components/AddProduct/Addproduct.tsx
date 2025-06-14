@@ -16,7 +16,7 @@ export default function AddProduct({ onSuccess, onCancel }: {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
+    const res = await fetch(`/api/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
