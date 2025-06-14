@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
+import { applyCors } from '../../../helpers/cors'
 
 const prisma = new PrismaClient();
+await applyCors(req, res);
 
 export async function GET() {
     const topProducts = await prisma.invoiceItem.groupBy({

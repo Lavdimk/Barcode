@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client'
+import { applyCors } from '@/app/helpers/cors'
 
 const prisma = new PrismaClient()
 
 export async function POST(req) {
+  await applyCors(req, res);
   try {
     const body = await req.json()
     console.log('Request body:', body)
@@ -18,11 +20,12 @@ export async function POST(req) {
 
     return new Response(JSON.stringify(product), { status: 201 })
   } catch (error) {
-    console.error('Gabim API:', error) 
+    console.error('Gabim API:', error)
     return new Response('Gabim gjatë shtimit të produktit', { status: 500 })
   }
 }
 export async function GET(req) {
+  await applyCors(req, res);
   try {
     const { searchParams } = new URL(req.url);
     const barcode = searchParams.get('barcode');
@@ -54,41 +57,41 @@ export async function GET(req) {
   }
 }
 
-  
+
 export async function DELETE(req) {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
-  
-    try {
-      await prisma.product.delete({ where: { id: Number(id) } });
-      return new Response("Product deleted", { status: 200 });
-    } catch (error) {
-      console.error(error);
-      return new Response("Error deleting product", { status: 500 });
-    }
+  await applyCors(req, res);
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  try {
+    await prisma.product.delete({ where: { id: Number(id) } });
+    return new Response("Product deleted", { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response("Error deleting product", { status: 500 });
   }
-  
-  export async function PUT(req) {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
-    const body = await req.json();
-  
-    try {
-      const updatedProduct = await prisma.product.update({
-        where: { id: Number(id) },
-        data: {
-          name: body.name,
-          barcode: body.barcode,
-          amount: body.amount,
-          price: body.price,
-        },
-      });
-  
-      return new Response(JSON.stringify(updatedProduct), { status: 200 });
-    } catch (error) {
-      console.error(error);
-      return new Response("Error updating product", { status: 500 });
-    }
+}
+
+export async function PUT(req) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  const body = await req.json();
+
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { id: Number(id) },
+      data: {
+        name: body.name,
+        barcode: body.barcode,
+        amount: body.amount,
+        price: body.price,
+      },
+    });
+
+    return new Response(JSON.stringify(updatedProduct), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response("Error updating product", { status: 500 });
   }
-  
- 
+}
+
