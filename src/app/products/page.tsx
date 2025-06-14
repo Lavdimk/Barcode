@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/generated/prisma";
+import { Product } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import "./products.css";
 import LoadingSpinner from "../../../components/loadingSpinner";
