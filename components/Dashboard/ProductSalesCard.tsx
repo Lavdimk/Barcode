@@ -19,7 +19,7 @@ export default function ProductSalesCard({ period, setPeriod }: Props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`/api/dashboard/product-sales?period=${period}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/product-sales?period=${period}`);
         if (!res.ok) throw new Error('Failed to fetch sales data');
         const json = await res.json();
 

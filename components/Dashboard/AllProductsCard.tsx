@@ -13,7 +13,7 @@ export default function AllProductsCard() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const res = await fetch('/api/dashboard/product-count');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/product-count`);
         if (!res.ok) {
           console.error('Response error:', res.status, res.statusText);
           return;

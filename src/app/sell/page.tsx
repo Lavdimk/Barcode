@@ -69,7 +69,7 @@ export default function SellPage() {
   async function fetchProductByBarcode(barcode: string) {
     try {
       setError('')
-      const res = await fetch(`/api/products?barcode=${barcode}`)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?barcode=${barcode}`)
       if (!res.ok) throw new Error('Produkti nuk u gjet.')
       const data: Product = await res.json()
 

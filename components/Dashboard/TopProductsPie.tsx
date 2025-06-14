@@ -16,7 +16,7 @@ export default function TopProductsPie() {
   useEffect(() => {
     const fetchTopProducts = async () => {
       try {
-        const res = await fetch('/api/dashboard/top-products');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/top-products`);
         const data = await res.json();
         setProductData(data);
       } catch (err) {

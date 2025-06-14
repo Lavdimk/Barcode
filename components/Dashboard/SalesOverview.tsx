@@ -19,7 +19,7 @@ export default function SalesOverview() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`/api/dashboard/sales-overview?range=${range}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/sales-overview?range=${range}`);
       const data = await res.json();
       setSalesData(data);
     };

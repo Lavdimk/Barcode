@@ -83,7 +83,7 @@ export default function HistoryPage() {
     if (!confirm(`Dëshironi të fshini këtë faturë?`)) return
 
     try {
-      const res = await fetch(`/api/invoices?id=${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/invoices?id=${id}`, {
         method: 'DELETE',
       })
       if (res.ok) {
