@@ -2,7 +2,7 @@
 
 import { Product } from "@/generated/prisma";
 import React, { useEffect, useState } from "react";
-import "./Products.css";
+import "./products.css";
 import LoadingSpinner from "../../../components/loadingSpinner";
 import SearchInput from "../../../components/SearchInput/searchInput";
 
