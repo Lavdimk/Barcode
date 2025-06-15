@@ -15,28 +15,32 @@ export type Invoice = {
 export default function Dashboard() {
   const [todayTotal, setTodayTotal] = useState<number | null>(null);
   const [todayInvoices, setTodayInvoices] = useState<Invoice[]>([]);
+useEffect(() => {
+  const fetchTodayTotal = async () => {
+    try {
+      const res = await fetch(`/api/invoices`);
+      if (!res.ok) throw new Error('Gabim gjatë marrjes së faturave');
+      const data: Invoice[] = await res.json();
 
-  useEffect(() => {
-    const fetchTodayTotal = async () => {
-      try {
-        const res = await fetch(`/api/invoices`);
-        if (!res.ok) throw new Error('Gabim gjatë marrjes së faturave');
-        const data: Invoice[] = await res.json();
+      const timeZone = 'Europe/Belgrade';
+      const today = new Date().toLocaleDateString('en-GB', { timeZone });
 
-        const today = new Date().toDateString();
-        const todayOnly = data.filter(inv => new Date(inv.createdAt).toDateString() === today);
+      const todayOnly = data.filter(inv => 
+        new Date(inv.createdAt).toLocaleDateString('en-GB', { timeZone }) === today
+      );
 
-        const total = todayOnly.reduce((sum, inv) => sum + inv.totalPrice, 0);
+      const total = todayOnly.reduce((sum, inv) => sum + inv.totalPrice, 0);
 
-        setTodayTotal(total);
-        setTodayInvoices(todayOnly);
-      } catch (err) {
-        console.error('Gabim:', err);
-      }
-    };
+      setTodayTotal(total);
+      setTodayInvoices(todayOnly);
+    } catch (err) {
+      console.error('Gabim:', err);
+    }
+  };
 
-    fetchTodayTotal();
-  }, []);
+  fetchTodayTotal();
+}, []);
+
 
   const [period, setPeriod] = useState<string>('Today');
 
