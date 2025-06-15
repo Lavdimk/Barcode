@@ -22,6 +22,8 @@ export default function ProductSalesCard({ period, setPeriod }: Props) {
         const res = await fetch(`/api/dashboard/product-sales?period=${period}`);
         if (!res.ok) throw new Error('Failed to fetch sales data');
         const json = await res.json();
+        console.log('Now:', new Date());
+
 
         setData(json.grouped.length ? json.grouped : [{ value: 0 }]);
         setTotalQuantity(json.totalQuantity || 0);
