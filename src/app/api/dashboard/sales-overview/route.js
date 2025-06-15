@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
+import { toLocalDate } from '../../../helpers/dateHelper';
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
-
     const range = req.nextUrl.searchParams.get('range') ?? '7d';
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -38,7 +38,7 @@ export async function GET(req) {
         for (const label of labels) resultMap.set(label, 0);
 
         for (const invoice of invoices) {
-            const d = new Date(invoice.createdAt);
+            const d = toLocalDate(new Date(invoice.createdAt));
             const dayLabel = ['e diel', 'e hënë', 'e martë', 'e mërkurë', 'e enjte', 'e premte', 'e shtunë'][d.getDay()];
             resultMap.set(dayLabel, (resultMap.get(dayLabel) ?? 0) + invoice.totalPrice);
         }
@@ -59,7 +59,7 @@ export async function GET(req) {
         for (const label of labels) resultMap.set(label, 0);
 
         for (const invoice of invoices) {
-            const date = new Date(invoice.createdAt);
+            const date = toLocalDate(new Date(invoice.createdAt));
             const week = Math.floor((date.getDate() - 1) / 7) + 1;
             const label = `Java ${week}`;
             resultMap.set(label, (resultMap.get(label) ?? 0) + invoice.totalPrice);
@@ -85,7 +85,7 @@ export async function GET(req) {
         for (const label of labels) resultMap.set(label, 0);
 
         for (const invoice of invoices) {
-            const d = new Date(invoice.createdAt);
+            const d = toLocalDate(new Date(invoice.createdAt));
             const label = monthNames[d.getMonth()];
             resultMap.set(label, (resultMap.get(label) ?? 0) + invoice.totalPrice);
         }

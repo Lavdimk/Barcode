@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { startOfDay, subWeeks, subMonths, subYears, format, differenceInCalendarWeeks } from 'date-fns';
+import { toLocalDate } from '../../../helpers/dateHelper'
+
 
 const prisma = new PrismaClient();
 
@@ -59,7 +61,7 @@ export async function GET(req) {
   const grouped = Array.from({ length: bins }, () => ({ value: 0 }));
 
   invoices.forEach(item => {
-    const createdAt = new Date(item.invoice.createdAt);
+    const createdAt = toLocalDate(item.invoice.createdAt);
     let index;
 
     if (groupBy === 'week') {
