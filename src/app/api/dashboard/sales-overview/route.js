@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function GET(req) {
     const range = req.nextUrl.searchParams.get('range') ?? '7d';
-    const today = new Date();
+    const today = toLocalDate(new Date());
     today.setHours(0, 0, 0, 0);
 
     let labels = [];
