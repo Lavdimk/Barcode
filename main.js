@@ -1,4 +1,3 @@
-// main.js
 import { app, BrowserWindow } from 'electron';
 
 function createWindow() {
@@ -11,7 +10,7 @@ function createWindow() {
     },
   });
 
-  win.loadURL('http://localhost:3000'); 
+  win.loadURL('https://barcode-9wvr.onrender.com/');
 }
 
 app.whenReady().then(createWindow);
