@@ -1,10 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-import { startOfDay, subWeeks, subMonths, subYears, format, differenceInCalendarWeeks } from 'date-fns';
+import {  subWeeks, subMonths, subYears, format, differenceInCalendarWeeks } from 'date-fns';
 import { toLocalDate } from '../../../helpers/dateHelper';
 
 const prisma = new PrismaClient();
 
 const sqDays = ['e diel', 'e hënë', 'e martë', 'e mërkurë', 'e enjte', 'e premte', 'e shtunë'];
+
+function getLocalStartOfDayUTC(date) {
+  const localStart = new Date(date);
+  localStart.setHours(0, 0, 0, 0);
+  return new Date(localStart.getTime() - localStart.getTimezoneOffset() * 60000);
+}
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -19,7 +25,7 @@ export async function GET(req) {
 
   switch (period) {
     case 'Today':
-      fromDate = startOfDay(now);
+      fromDate = getLocalStartOfDayUTC(now);
       groupBy = 'hour';
       formatStr = 'H';
       bins = 24;
@@ -48,7 +54,7 @@ export async function GET(req) {
       break;
 
     default:
-      fromDate = startOfDay(now);
+      fromDate = getLocalStartOfDayUTC(now);
   }
 
   const invoices = await prisma.invoiceItem.findMany({
