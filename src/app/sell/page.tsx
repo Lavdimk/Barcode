@@ -26,6 +26,7 @@ export default function SellPage() {
   const [productToEdit, setProductToEdit] = useState<Product | null>(null)
   const [editedAmount, setEditedAmount] = useState('')
   const [error, setError] = useState('')
+  const [isProcessingSale, setIsProcessingSale] = useState(false)
 
   const pathname = usePathname()
 
@@ -80,7 +81,7 @@ export default function SellPage() {
   }
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
       const active = document.activeElement as HTMLElement
 
       if (active?.tagName === 'INPUT' || active?.tagName === 'TEXTAREA') {
@@ -129,10 +130,11 @@ export default function SellPage() {
         }
 
         if (showCompleteModal) {
-          setTimeout(async () => {
-            await completeSale()
-            setShowCompleteModal(false)
-          }, 0)
+          if (isProcessingSale) return
+          setIsProcessingSale(true)
+          await completeSale()
+          setShowCompleteModal(false)
+          setIsProcessingSale(false)
           return
         }
 
@@ -310,10 +312,19 @@ export default function SellPage() {
           <div className="modal-content">
             <p>A je i sigurt që dëshiron të kryesh pagesën?</p>
             <div className="modal-buttons">
-              <button className="confirm" onClick={async () => {
-                await completeSale()
-                setShowCompleteModal(false)
-              }}>Po</button>
+              <button
+                className="confirm"
+                disabled={isProcessingSale} // blloko klikimet gjatë përpunimit
+                onClick={async () => {
+                  if (isProcessingSale) return
+                  setIsProcessingSale(true)
+                  await completeSale()
+                  setShowCompleteModal(false)
+                  setIsProcessingSale(false)
+                }}
+              >
+                {isProcessingSale ? 'Duke u ruajtur...' : 'Po'}
+              </button>
               <button className="cancel" onClick={() => setShowCompleteModal(false)}>Jo</button>
             </div>
           </div>
