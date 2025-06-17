@@ -1,45 +1,101 @@
 "use client";
 
 import { Product } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import "./products.css";
 import LoadingSpinner from "../../../components/loadingSpinner";
 import SearchInput from "../../../components/SearchInput/searchInput";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [filterRed, setFilterRed] = useState(false);
   const [filterOrange, setFilterOrange] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
+  const loadingRef = useRef(loading);
+  const hasMoreRef = useRef(hasMore);
+  const pageRef = useRef(page);
+  const totalPagesRef = useRef(totalPages);
 
-  const fetchProducts = async () => {
-    const res = await fetch(`api/products`);
-    const data = await res.json();
-    setProducts(data);
-    setLoading(false);
-  };
+  useEffect(() => { loadingRef.current = loading }, [loading]);
+  useEffect(() => { hasMoreRef.current = hasMore }, [hasMore]);
+  useEffect(() => { pageRef.current = page }, [page]);
+  useEffect(() => { totalPagesRef.current = totalPages }, [totalPages]);
+
+  const fetchProducts = useCallback(async (pageNum: number) => {
+    if (loadingRef.current || pageNum > totalPagesRef.current) return;
+    setLoading(true);
+    try {
+      const limit = 50;
+      const res = await fetch(`/api/products?page=${pageNum}&limit=${limit}`);
+      const data = await res.json();
+
+      if (pageNum === 1) {
+        setProducts(data.products);
+      } else {
+        setProducts((prev) => [...prev, ...data.products]);
+      }
+
+      const totalPagesCalc = Math.ceil(data.total / limit);
+      setTotalPages(totalPagesCalc);
+      setHasMore(pageNum < totalPagesCalc);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(page);
+  }, [page, fetchProducts]);
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 50 &&
+      !loadingRef.current &&
+      hasMoreRef.current &&
+      pageRef.current < totalPagesRef.current
+    ) {
+      setPage((prev) => prev + 1);
+    }
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const handleEditClick = (product: Product) => {
     setEditingProduct(product);
   };
 
   const handleEditSave = async (updatedProduct: Product) => {
-    await fetch(`/api/products?id=${updatedProduct.id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedProduct),
-      headers: { "Content-Type": "application/json" },
-    });
-    setEditingProduct(null);
-    fetchProducts();
+    try {
+      await fetch(`/api/products?id=${updatedProduct.id}`, {
+        method: "PUT",
+        body: JSON.stringify(updatedProduct),
+        headers: { "Content-Type": "application/json" },
+      });
+      setEditingProduct(null);
+      setPage(1);
+      setProducts([]);
+      fetchProducts(1);
+    } catch (error) {
+      console.error("Error saving product:", error);
+    }
   };
 
   const handleEditCancel = () => {
@@ -53,10 +109,18 @@ export default function Products() {
 
   const confirmDelete = async () => {
     if (!productToDelete) return;
-    await fetch(`/api/products?id=${productToDelete.id}`, { method: "DELETE" });
-    setShowDeleteModal(false);
-    setProductToDelete(null);
-    fetchProducts();
+    try {
+      await fetch(`/api/products?id=${productToDelete.id}`, {
+        method: "DELETE",
+      });
+      setShowDeleteModal(false);
+      setProductToDelete(null);
+      setPage(1);
+      setProducts([]);
+      fetchProducts(1);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   const cancelDelete = () => {
@@ -73,20 +137,16 @@ export default function Products() {
       product.price.toString().includes(q);
 
     const matchesRed = filterRed && product.amount === 0;
-    const matchesOrange = filterOrange && product.amount > 0 && product.amount <= 5;
-    const showBasedOnCheckboxes = filterRed || filterOrange
-      ? matchesRed || matchesOrange
-      : true;
+    const matchesOrange =
+      filterOrange && product.amount > 0 && product.amount <= 5;
+
+    const showBasedOnCheckboxes =
+      filterRed || filterOrange ? matchesRed || matchesOrange : true;
 
     return matchesSearch && showBasedOnCheckboxes;
   });
 
-
-  if (loading) {
-    return (
-      <LoadingSpinner />
-    )
-  }
+  if (loading && page === 1) return <LoadingSpinner />;
 
   return (
     <div>
@@ -95,14 +155,13 @@ export default function Products() {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <label
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
               backgroundColor: filterRed ? "rgba(255, 0, 0, 0.15)" : "#e0e0e0",
               padding: "6px 10px",
               borderRadius: "8px",
               cursor: "pointer",
-              transition: "background-color 0.2s ease"
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
             }}
           >
             <input
@@ -115,14 +174,15 @@ export default function Products() {
 
           <label
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              backgroundColor: filterOrange ? "rgba(255, 165, 0, 0.15)" : "#e0e0e0",
+              backgroundColor: filterOrange
+                ? "rgba(255, 165, 0, 0.15)"
+                : "#e0e0e0",
               padding: "6px 10px",
               borderRadius: "8px",
               cursor: "pointer",
-              transition: "background-color 0.2s ease"
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
             }}
           >
             <input
@@ -148,7 +208,7 @@ export default function Products() {
             <th>Emri</th>
             <th>Barcode</th>
             <th>Stoku</th>
-            <th>Cmimi</th>
+            <th>Çmimi</th>
             <th>Veprimet</th>
           </tr>
         </thead>
@@ -164,10 +224,10 @@ export default function Products() {
                     : ""
               }
             >
-              <td >{p.id}</td>
+              <td>{p.id}</td>
               <td className="product-cell">{p.name}</td>
-              <td >{p.barcode}</td>
-              <td >{p.amount}</td>
+              <td>{p.barcode}</td>
+              <td>{p.amount}</td>
               <td className="product-cell">${p.price}</td>
               <td className="actions">
                 <button className="edit" onClick={() => handleEditClick(p)}>
@@ -181,6 +241,8 @@ export default function Products() {
           ))}
         </tbody>
       </table>
+
+      {loading && page > 1 && <LoadingSpinner />}
 
       {showDeleteModal && (
         <div className="modal-overlay">
@@ -226,7 +288,7 @@ function EditProductForm({
   const [amount, setAmount] = useState(product.amount);
   const [price, setPrice] = useState(product.price);
 
-  const nameInputRef = React.useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -240,7 +302,7 @@ function EditProductForm({
   return (
     <div className="modal-overlay">
       <div className="modal-content edit-modal">
-        <h2>Perditëso Produktin</h2>
+        <h2>Përditëso Produktin</h2>
         <form onSubmit={handleSubmit} className="edit-form">
           <div className="form-group">
             <label>Emri:</label>
@@ -272,7 +334,7 @@ function EditProductForm({
             />
           </div>
           <div className="form-group">
-            <label>Price:</label>
+            <label>Çmimi:</label>
             <input
               type="number"
               step="0.01"

@@ -139,3 +139,44 @@
   background-color: #fcfcfc;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-buttons .confirm {
+  background-color: #f44336;
+  color: white;
+  padding: 0.5rem 1rem;
+}
+
+.modal-buttons .cancel {
+  background-color: #ccc;
+  color: #333;
+  padding: 0.5rem 1rem;
+}

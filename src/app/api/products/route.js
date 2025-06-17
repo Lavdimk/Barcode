@@ -39,19 +39,32 @@ export async function GET(req) {
         headers: { 'Content-Type': 'application/json' },
         status: 200,
       });
-    } else {
-      const products = await prisma.product.findMany();
-
-      return new Response(JSON.stringify(products), {
-        headers: { 'Content-Type': 'application/json' },
-        status: 200,
-      });
     }
+
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        orderBy: { id: 'asc' },
+      }),
+      prisma.product.count(),
+    ]);
+
+    return new Response(JSON.stringify({ products, total }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    });
+
   } catch (error) {
     console.error(error);
     return new Response('Error retrieving product(s)', { status: 500 });
   }
 }
+
 
 
 export async function DELETE(req) {

@@ -25,6 +25,13 @@ export default function HistoryPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [modalContent, setModalContent] = useState<{
+    type: 'single' | 'date',
+    id?: number,
+    date?: string
+  } | null>(null)
+
   const fetchInvoices = async () => {
     setLoading(true)
     try {
@@ -61,39 +68,38 @@ export default function HistoryPage() {
     setExpandedDates(prev => ({ ...prev, [date]: !prev[date] }))
   }
 
-  const deleteInvoicesByDate = async (date: string) => {
-    if (!confirm(`Dëshironi të fshini të gjitha faturat për datën ${date}?`)) return
-
-    try {
-      const res = await fetch(`/api/invoices?date=${encodeURIComponent(date)}`, {
-        method: 'DELETE',
-      })
-      if (res.ok) {
-        alert('Faturat u fshinë me sukses.')
-        fetchInvoices()
-      } else {
-        alert('Gabim gjatë fshirjes së faturave.')
-      }
-    } catch {
-      alert('Gabim gjatë fshirjes së faturave.')
-    }
+  const requestDeleteInvoicesByDate = (date: string) => {
+    setModalContent({ type: 'date', date })
+    setShowDeleteModal(true)
   }
 
-  const deleteInvoiceById = async (id: number) => {
-    if (!confirm(`Dëshironi të fshini këtë faturë?`)) return
+  const requestDeleteInvoiceById = (id: number) => {
+    setModalContent({ type: 'single', id })
+    setShowDeleteModal(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!modalContent) return
 
     try {
-      const res = await fetch(`/api/invoices?id=${id}`, {
+      const url = modalContent.type === 'date'
+        ? `/api/invoices?date=${encodeURIComponent(modalContent.date!)}`
+        : `/api/invoices?id=${modalContent.id}`
+
+      const res = await fetch(url, {
         method: 'DELETE',
       })
+
       if (res.ok) {
-        alert('Fatura u fshi me sukses.')
         fetchInvoices()
       } else {
         alert('Gabim gjatë fshirjes së faturës.')
       }
     } catch {
       alert('Gabim gjatë fshirjes së faturës.')
+    } finally {
+      setShowDeleteModal(false)
+      setModalContent(null)
     }
   }
 
@@ -126,9 +132,9 @@ export default function HistoryPage() {
               <div className={styles.dateHeader} onClick={() => toggleExpand(date)}>
                 <span>{date}</span>
                 <span className={styles.dateSummary}>
-                  {invoices.length} fatura -
+                  {invoices.length} fatura -{' '}
                   <span className={styles.totalAmountGreen}>
-                    {' '}Total: {dailyTotal.toFixed(2)} €
+                    Total: {dailyTotal.toFixed(2)} €
                   </span>
                 </span>
 
@@ -136,7 +142,7 @@ export default function HistoryPage() {
                   className={styles.deleteDayBtn}
                   onClick={(e) => {
                     e.stopPropagation()
-                    deleteInvoicesByDate(date)
+                    requestDeleteInvoicesByDate(date)
                   }}
                 >
                   <Trash2 color="red" size={18} />
@@ -145,7 +151,6 @@ export default function HistoryPage() {
 
               {expandedDates[date] &&
                 invoices.slice().reverse().map((invoice, index) => (
-
                   <div key={invoice.id} className={styles.invoiceBox}>
                     <div className={styles.invoiceHeader}>
                       <p className={styles.invoiceTotal}>
@@ -154,7 +159,7 @@ export default function HistoryPage() {
                       </p>
                       <button
                         className={styles.deleteInvoiceBtn}
-                        onClick={() => deleteInvoiceById(invoice.id)}
+                        onClick={() => requestDeleteInvoiceById(invoice.id)}
                       >
                         <Trash2 color="red" size={16} />
                       </button>
@@ -180,14 +185,31 @@ export default function HistoryPage() {
                           ))}
                         </tbody>
                       </table>
-
                     </ul>
                   </div>
                 ))}
-
             </div>
           )
         })}
+
+      {showDeleteModal && modalContent && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>
+              A je i sigurt që dëshiron të fshish{' '}
+              <strong>
+                {modalContent.type === 'single'
+                  ? 'këtë faturë?'
+                  : `të gjitha faturat për datën ${modalContent.date}?`}
+              </strong>
+            </p>
+            <div className="modal-buttons">
+              <button className="confirm" onClick={confirmDelete}>Po</button>
+              <button className="cancel" onClick={() => setShowDeleteModal(false)}>Jo</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
