@@ -24,7 +24,6 @@
   box-sizing: border-box;
   background-color: #fafafa;
   border-radius: 8px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -41,6 +40,7 @@
   font-size: 110px;
   font-weight: bold;
   color: #2e7d32;
+  font-family: Inter, sans-serif;
 }
 
 
@@ -68,12 +68,14 @@
   font-size: 16px;
   width: 50%;
   margin-bottom: 10px;
+  font-family: Inter, sans-serif;
 }
 
 .sell-search-input {
   padding: 12px;
   font-size: 16px;
   width: 50%;
+  font-family: Inter, sans-serif;
 }
 
 .sell-error {
@@ -101,8 +103,6 @@
   z-index: 10;
 }
 
-
-
 .search-result-item {
   padding: 10px;
   border-bottom: 1px solid #ddd;
@@ -122,6 +122,7 @@
   border-bottom: 1px solid #ddd;
   font-size: 18px;
   font-weight: 600;
+  font-family: Inter, sans-serif;
 
 }
 
@@ -144,6 +145,7 @@
   text-align: center;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-family: Inter, sans-serif;
 }
 
 .delete-button {
@@ -273,14 +275,12 @@ hr {
 
 .rounded-cell {
   background-color: #d1e7ff;
-
   border-radius: 12px;
   padding: 6px 12px;
   display: inline-block;
   font-weight: 600;
-
   color: #0a3d62;
-
+  font-family: Inter, sans-serif;
 }
 
 .edit-button {
@@ -312,6 +312,7 @@ hr {
   font-size: 14px;
   margin-top: -5px;
   margin-bottom: 10px;
+  font-family: Inter, sans-serif;
 }
 
 .row-overstock td {

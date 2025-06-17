@@ -30,6 +30,7 @@
   font-weight: 600;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   background: white;
+  font-family: Inter, sans-serif;
 }
 
 .salesCard {
@@ -60,6 +61,7 @@
   font-weight: bold;
   margin: 10px 0;
   color: #2ecc71;
+  font-family: Inter, sans-serif;
 }
 
 .chartWrapper {
@@ -85,6 +87,7 @@
   color: #FFA500;
   font-weight: bold;
   margin: 10px 0;
+  font-family: Inter, sans-serif;
 }
 
 .productGrowth {
@@ -118,12 +121,14 @@
   color: #8e44ad;
   font-weight: 600;
   font-size: 14px;
+  font-family: Inter, sans-serif;
 }
 
 .allProductsTitle {
   font-size: 18px;
   font-weight: 600;
   color: #333;
+  font-family: Inter, sans-serif;
 }
 
 .allProductsGrowth {
@@ -151,12 +156,14 @@
   font-weight: bold;
   color: #8e44ad;
   text-align: center;
+  font-family: Inter, sans-serif;
 }
 .topProductsHeader {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
   margin-bottom: 10px;
+  font-family: Inter, sans-serif;
 }
 .card5 {
   border-radius: 5px;
@@ -173,6 +180,7 @@
   font-weight: 600;
   margin-bottom: 10px;
   text-align: center;
+  font-family: Inter, sans-serif;
 }
 
 .pieChartWrapper {
@@ -281,6 +289,7 @@
   cursor: pointer;
   box-shadow: 0 0 6px rgba(255, 165, 0, 0.5);
   transition: background-color 0.3s ease;
+  font-family: Inter, sans-serif;
 }
 
 .dropdown:hover {

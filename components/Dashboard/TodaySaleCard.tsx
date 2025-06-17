@@ -41,7 +41,7 @@ export default function TodaySaleCard({ todayTotal, invoices }: Props) {
             <div className={styles.salesCard}>
                 <div className={styles.cardHeader} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <h3>Totali Shitjes</h3>
-                    <div style={{fontSize: '0.9rem', color: '#555', textAlign: 'right'}}>
+                    <div style={{fontSize: '0.8rem', color: '#777272', textAlign: 'right'}}>
                         {getTodayInAlbanian()}
                     </div>
                 </div>

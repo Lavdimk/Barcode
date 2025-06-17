@@ -38,7 +38,7 @@ export default function ProductSalesCard({ period, setPeriod }: Props) {
     <div className={`${styles.card} ${styles.card2}`}>
       <div className={styles.salesCard}>
         <div className={styles.cardHeader}>
-          <h3>Shitjet e Produkteve</h3>
+          <h3>Produktet e Shitura</h3>
           <select
             className={styles.dropdown}
             value={period}

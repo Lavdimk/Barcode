@@ -9,8 +9,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
-  font-family: Arial, sans-serif;
-}
+ font-family: Inter, sans-serif;}
 
 th,
 td {
@@ -260,10 +259,12 @@ thead {
   justify-content: space-between;
   align-items: center;
   margin: 10px;
+  font-family: Inter, sans-serif;
 }
 
 .products-title {
   margin: 0;
+  font-family: Inter, sans-serif;
 }
 
 .product-search-input {
@@ -275,6 +276,7 @@ thead {
   font-size: 14px;
   outline: none;
   margin: 10px;
+  font-family: Inter, sans-serif;
 }
 
 .product-cell {
@@ -288,38 +290,4 @@ thead {
 
 .row-orange {
   background-color: rgba(255, 165, 0, 0.15);
-}
-.pagination {
-  position: sticky;
-  bottom: 0;
-  background: white;
-  padding: 1rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  border-top: 1px solid #ccc;
-  margin-top: 2rem;
-  z-index: 10;
-}
-
-.pagination button {
-  padding: 6px 14px;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.pagination span {
-  font-weight: 500;
-  font-size: 14px;
 }
