@@ -21,10 +21,14 @@ export async function POST(req) {
     return new Response('Gabim gjatë shtimit të produktit', { status: 500 })
   }
 }
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const barcode = searchParams.get('barcode');
+    const searchQuery = searchParams.get('search') || '';
+    const amount = searchParams.get('amount');
+    const amountRange = searchParams.get('amountRange'); 
 
     if (barcode) {
       const product = await prisma.product.findUnique({
@@ -44,14 +48,49 @@ export async function GET(req) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
+    const where = { AND: [] };
+
+    if (searchQuery) {
+      where.AND.push({
+        OR: [
+          { name: { contains: searchQuery, mode: 'insensitive' } },
+          { barcode: { contains: searchQuery, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (amount === '0' && amountRange === '1-5') {
+      where.AND.push({
+        OR: [
+          { amount: 0 },
+          {
+            amount: {
+              gte: 1,
+              lte: 5,
+            },
+          },
+        ],
+      });
+    } else if (amount === '0') {
+      where.AND.push({ amount: 0 });
+    } else if (amountRange === '1-5') {
+      where.AND.push({
+        amount: {
+          gte: 1,
+          lte: 5,
+        },
+      });
+    }
+
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({
+        where,
         skip,
         take: limit,
         orderBy: { id: 'asc' },
       }),
-      prisma.product.count(),
+      prisma.product.count({ where }),
     ]);
 
     return new Response(JSON.stringify({ products, total }), {
@@ -64,8 +103,6 @@ export async function GET(req) {
     return new Response('Error retrieving product(s)', { status: 500 });
   }
 }
-
-
 
 export async function DELETE(req) {
   const { searchParams } = new URL(req.url);

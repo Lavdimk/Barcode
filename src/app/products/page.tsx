@@ -1,23 +1,18 @@
-"use client";
+'use client';
 
-import { Product } from "@prisma/client";
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
-import "./products.css";
-import LoadingSpinner from "../../../components/loadingSpinner";
-import SearchInput from "../../../components/SearchInput/searchInput";
+import { Product } from '@prisma/client';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import './products.css';
+import LoadingSpinner from '../../../components/loadingSpinner';
+import SearchInput from '../../../components/SearchInput/searchInput';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTrigger, setSearchTrigger] = useState('');
   const [filterRed, setFilterRed] = useState(false);
   const [filterOrange, setFilterOrange] = useState(false);
   const [page, setPage] = useState(1);
@@ -34,33 +29,51 @@ export default function Products() {
   useEffect(() => { pageRef.current = page }, [page]);
   useEffect(() => { totalPagesRef.current = totalPages }, [totalPages]);
 
-  const fetchProducts = useCallback(async (pageNum: number) => {
-    if (loadingRef.current || pageNum > totalPagesRef.current) return;
-    setLoading(true);
-    try {
-      const limit = 50;
-      const res = await fetch(`/api/products?page=${pageNum}&limit=${limit}`);
-      const data = await res.json();
+  const fetchProducts = useCallback(
+    async (
+      pageNum: number,
+      search: string,
+      filterRedChecked: boolean,
+      filterOrangeChecked: boolean
+    ) => {
+      setLoading(true);
+      try {
+        const limit = 50;
+        const params = new URLSearchParams();
+        params.append('page', pageNum.toString());
+        params.append('limit', limit.toString());
+        if (search) params.append('search', search);
+        if (filterRedChecked) params.append('amount', '0');
+        if (filterOrangeChecked) params.append('amountRange', '1-5');
 
-      if (pageNum === 1) {
-        setProducts(data.products);
-      } else {
-        setProducts((prev) => [...prev, ...data.products]);
+        const res = await fetch(`/api/products?${params.toString()}`);
+        const data = await res.json();
+
+        if (pageNum === 1) {
+          setProducts(data.products);
+        } else {
+          setProducts(prev => [...prev, ...data.products]);
+        }
+
+        const total = Math.ceil(data.total / limit);
+        setTotalPages(total);
+        setHasMore(pageNum < total);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-
-      const totalPagesCalc = Math.ceil(data.total / limit);
-      setTotalPages(totalPagesCalc);
-      setHasMore(pageNum < totalPagesCalc);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    }, []);
 
   useEffect(() => {
-    fetchProducts(page);
-  }, [page, fetchProducts]);
+    setPage(1);
+    fetchProducts(1, searchTrigger, filterRed, filterOrange);
+  }, [searchTrigger, filterRed, filterOrange, fetchProducts]);
+
+  useEffect(() => {
+    if (page === 1) return;
+    fetchProducts(page, searchTrigger, filterRed, filterOrange);
+  }, [page, searchTrigger, filterRed, filterOrange, fetchProducts]);
 
   const handleScroll = useCallback(() => {
     if (
@@ -74,77 +87,52 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  const handleEditClick = (product: Product) => {
-    setEditingProduct(product);
-  };
+  const handleEditClick = (product: Product) => setEditingProduct(product);
 
   const handleEditSave = async (updatedProduct: Product) => {
     try {
       await fetch(`/api/products?id=${updatedProduct.id}`, {
-        method: "PUT",
+        method: 'PUT',
         body: JSON.stringify(updatedProduct),
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
       setEditingProduct(null);
       setPage(1);
       setProducts([]);
-      fetchProducts(1);
+      fetchProducts(1, searchTrigger, filterRed, filterOrange);
     } catch (error) {
-      console.error("Error saving product:", error);
+      console.error('Error saving product:', error);
     }
   };
 
-  const handleEditCancel = () => {
-    setEditingProduct(null);
-  };
-
-  const handleDeleteClick = (product: Product) => {
-    setProductToDelete(product);
-    setShowDeleteModal(true);
-  };
+  const handleDeleteClick = (product: Product) => setProductToDelete(product);
 
   const confirmDelete = async () => {
     if (!productToDelete) return;
     try {
       await fetch(`/api/products?id=${productToDelete.id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
-      setShowDeleteModal(false);
       setProductToDelete(null);
       setPage(1);
       setProducts([]);
-      fetchProducts(1);
+      fetchProducts(1, searchTrigger, filterRed, filterOrange);
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error('Error deleting product:', error);
     }
   };
 
-  const cancelDelete = () => {
-    setShowDeleteModal(false);
-    setProductToDelete(null);
+  const handleSearchEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setProducts([]);
+      setPage(1);
+      setSearchTrigger(searchQuery);
+    }
   };
-
-  const filteredProducts = products.filter((product) => {
-    const q = searchQuery.toLowerCase();
-    const matchesSearch =
-      product.name.toLowerCase().includes(q) ||
-      product.barcode.toLowerCase().includes(q) ||
-      product.amount.toString().includes(q) ||
-      product.price.toString().includes(q);
-
-    const matchesRed = filterRed && product.amount === 0;
-    const matchesOrange =
-      filterOrange && product.amount > 0 && product.amount <= 5;
-
-    const showBasedOnCheckboxes =
-      filterRed || filterOrange ? matchesRed || matchesOrange : true;
-
-    return matchesSearch && showBasedOnCheckboxes;
-  });
 
   if (loading && page === 1) return <LoadingSpinner />;
 
@@ -152,18 +140,16 @@ export default function Products() {
     <div>
       <div className="products-header">
         <h1 className="products-title">Lista Produkteve</h1>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <label
-            style={{
-              backgroundColor: filterRed ? "rgba(255, 0, 0, 0.15)" : "#e0e0e0",
-              padding: "6px 10px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <label style={{
+            backgroundColor: filterRed ? 'rgba(255, 0, 0, 0.15)' : '#e0e0e0',
+            padding: '6px 10px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}>
             <input
               type="checkbox"
               checked={filterRed}
@@ -172,19 +158,15 @@ export default function Products() {
             0 stok
           </label>
 
-          <label
-            style={{
-              backgroundColor: filterOrange
-                ? "rgba(255, 165, 0, 0.15)"
-                : "#e0e0e0",
-              padding: "6px 10px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
+          <label style={{
+            backgroundColor: filterOrange ? 'rgba(255, 165, 0, 0.15)' : '#e0e0e0',
+            padding: '6px 10px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}>
             <input
               type="checkbox"
               checked={filterOrange}
@@ -196,6 +178,7 @@ export default function Products() {
           <SearchInput
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchEnter}
             placeholder="Kërko Produkte..."
           />
         </div>
@@ -213,15 +196,15 @@ export default function Products() {
           </tr>
         </thead>
         <tbody>
-          {filteredProducts.map((p) => (
+          {products.map((p) => (
             <tr
               key={p.id}
               className={
                 p.amount === 0
-                  ? "row-red"
+                  ? 'row-red'
                   : p.amount > 0 && p.amount <= 5
-                    ? "row-orange"
-                    : ""
+                    ? 'row-orange'
+                    : ''
               }
             >
               <td>{p.id}</td>
@@ -230,12 +213,8 @@ export default function Products() {
               <td>{p.amount}</td>
               <td className="product-cell">${p.price}</td>
               <td className="actions">
-                <button className="edit" onClick={() => handleEditClick(p)}>
-                  Ndrysho
-                </button>
-                <button className="delete" onClick={() => handleDeleteClick(p)}>
-                  Fshi
-                </button>
+                <button className="edit" onClick={() => handleEditClick(p)}>Ndrysho</button>
+                <button className="delete" onClick={() => handleDeleteClick(p)}>Fshi</button>
               </td>
             </tr>
           ))}
@@ -244,32 +223,47 @@ export default function Products() {
 
       {loading && page > 1 && <LoadingSpinner />}
 
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <p>
-              A jeni i sigurt që dëshironi të fshini{" "}
-              <strong>{productToDelete?.name}</strong>?
-            </p>
-            <div className="modal-buttons">
-              <button className="confirm" onClick={confirmDelete}>
-                Po
-              </button>
-              <button className="cancel" onClick={cancelDelete}>
-                Jo
-              </button>
-            </div>
-          </div>
-        </div>
+      {productToDelete && (
+        <ConfirmModal
+          title="Fshij Produktin"
+          message={`A jeni i sigurt që dëshironi të fshini "${productToDelete.name}"?`}
+          onConfirm={confirmDelete}
+          onCancel={() => setProductToDelete(null)}
+        />
       )}
 
       {editingProduct && (
         <EditProductForm
           product={editingProduct}
           onSave={handleEditSave}
-          onCancel={handleEditCancel}
+          onCancel={() => setEditingProduct(null)}
         />
       )}
+    </div>
+  );
+}
+
+function ConfirmModal({
+  title,
+  message,
+  onConfirm,
+  onCancel,
+}: {
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h3>{title}</h3>
+        <p>{message}</p>
+        <div className="modal-buttons">
+          <button className="confirm" onClick={onConfirm}>Po</button>
+          <button className="cancel" onClick={onCancel}>Jo</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -345,12 +339,8 @@ function EditProductForm({
             />
           </div>
           <div className="modalButtonsEdit">
-            <button type="submit" className="submitButton">
-              Ruaj
-            </button>
-            <button type="button" className="cancelButton" onClick={onCancel}>
-              Anulo
-            </button>
+            <button type="submit" className="submitButton">Ruaj</button>
+            <button type="button" className="cancelButton" onClick={onCancel}>Anulo</button>
           </div>
         </form>
       </div>
