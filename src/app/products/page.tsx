@@ -5,6 +5,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './products.css';
 import LoadingSpinner from '../../../components/loadingSpinner';
 import SearchInput from '../../../components/SearchInput/searchInput';
+import { useNotificationStore } from '@/store/notificationStore';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -100,6 +101,8 @@ export default function Products() {
         body: JSON.stringify(updatedProduct),
         headers: { 'Content-Type': 'application/json' },
       });
+      const refetchNotifications = useNotificationStore.getState().refetch;
+      refetchNotifications();
       setEditingProduct(null);
       setPage(1);
       setProducts([]);

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import './sell.css'
 import { Trash2, Pencil } from 'lucide-react'
+import { useNotificationStore } from '@/store/notificationStore'
 
 
 type Product = {
@@ -188,6 +189,8 @@ export default function SellPage() {
 
       if (!res.ok) throw new Error('Nuk u ruajt fatura.')
       clearList()
+      const refetchNotifications = useNotificationStore.getState().refetch;
+      refetchNotifications();
     } catch (err) {
       console.error(err)
       alert('Ndodhi një gabim gjatë ruajtjes së shitjes.')
@@ -313,8 +316,8 @@ export default function SellPage() {
             <p>A je i sigurt që dëshiron të kryesh pagesën?</p>
             <div className="modal-buttons">
               <button
-                className="confirm"
-                disabled={isProcessingSale} // blloko klikimet gjatë përpunimit
+                className={`confirm ${isProcessingSale ? 'saving' : ''}`}
+                disabled={isProcessingSale}
                 onClick={async () => {
                   if (isProcessingSale) return
                   setIsProcessingSale(true)

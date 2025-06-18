@@ -56,16 +56,34 @@ export async function POST(req) {
         if (!dbProduct) continue;
 
         const decrementAmount = Math.min(p.amount, dbProduct.amount);
+        const newAmount = dbProduct.amount - decrementAmount;
 
         if (decrementAmount > 0) {
           await tx.product.update({
             where: { id: p.id },
             data: {
-              amount: {
-                decrement: decrementAmount
-              }
+              amount: newAmount
             }
           });
+        }
+
+        if (newAmount === 0) {
+          const existingNotification = await tx.notification.findFirst({
+            where: {
+              message: {
+                contains: dbProduct.name,
+              },
+              read: false,
+            },
+          });
+
+          if (!existingNotification) {
+            await tx.notification.create({
+              data: {
+                message: `Produkti "${dbProduct.name}" ka rënë në 0 stok.`,
+              },
+            });
+          }
         }
       }
 
@@ -82,7 +100,6 @@ export async function POST(req) {
     return new Response("Gabim gjatë ruajtjes së faturës", { status: 500 });
   }
 }
-
 
 export async function GET() {
   try {

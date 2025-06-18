@@ -37,3 +37,10 @@ model InvoiceItem {
   amount     Int
   price      Float
 }
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

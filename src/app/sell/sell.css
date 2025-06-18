@@ -330,3 +330,8 @@ hr {
   margin-right: 5px;
 
 }
+
+.confirm.saving {
+  background-color: #28a745;
+  color: white;
+}

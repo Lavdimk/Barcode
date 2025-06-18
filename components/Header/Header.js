@@ -4,11 +4,11 @@ import Link from 'next/link';
 import styles from './Header.module.css';
 import React, { useState } from 'react';
 import AddProduct from '../AddProduct/Addproduct';
-import { Bell, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import NotificationDropdown from '../Notification/notificationModal';
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const openModal = () => setIsModalOpen(true);
 
@@ -35,12 +35,8 @@ export default function Header() {
         </div>
 
         <div className={styles.rightSide}>
-
-
           <div className={styles.date}>{currentDate}</div>
-
-          <Bell size={24} className="text-white" />
-
+          <NotificationDropdown />
           <button className={styles.addProductButton} onClick={openModal}>
             <Plus size={18} />
             <span>Shto Produkt</span>

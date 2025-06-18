@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -28,7 +29,7 @@ export async function GET(req) {
     const barcode = searchParams.get('barcode');
     const searchQuery = searchParams.get('search') || '';
     const amount = searchParams.get('amount');
-    const amountRange = searchParams.get('amountRange'); 
+    const amountRange = searchParams.get('amountRange');
 
     if (barcode) {
       const product = await prisma.product.findUnique({
@@ -123,6 +124,14 @@ export async function PUT(req) {
   const body = await req.json();
 
   try {
+    const prevProduct = await prisma.product.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!prevProduct) {
+      return new Response("Produkti nuk u gjet", { status: 404 });
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id: Number(id) },
       data: {
@@ -133,10 +142,56 @@ export async function PUT(req) {
       },
     });
 
+    if (prevProduct.amount === 0 && updatedProduct.amount > 0) {
+      await prisma.notification.deleteMany({
+        where: {
+          message: {
+            contains: updatedProduct.name,
+          },
+          read: false,
+        },
+      });
+    }
+
     return new Response(JSON.stringify(updatedProduct), { status: 200 });
+
   } catch (error) {
     console.error(error);
     return new Response("Error updating product", { status: 500 });
   }
 }
 
+
+export async function PATCH(req) {
+  const { id, amount } = await req.json();
+  console.log('PATCH /api/products body:', { id, amount });
+
+  if (!id || amount === undefined) {
+    return NextResponse.json({ error: 'Id dhe amount janë të nevojshme' }, { status: 400 });
+  }
+
+  const updatedProduct = await prisma.product.update({
+    where: { id: Number(id) },
+    data: { amount },
+  });
+
+  if (updatedProduct.amount === 0) {
+    const existing = await prisma.notification.findFirst({
+      where: {
+        message: {
+          contains: updatedProduct.name,
+        },
+        read: false,
+      },
+    });
+    if (!existing) {
+      await prisma.notification.create({
+        data: {
+          message: `Produkti "${updatedProduct.name}" ka rënë në 0 stok.`,
+        },
+      });
+    }
+  }
+
+  return NextResponse.json(updatedProduct);
+}
