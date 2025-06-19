@@ -213,7 +213,9 @@ export default function Products() {
               <td>{p.id}</td>
               <td className="product-cell">{p.name}</td>
               <td>{p.barcode}</td>
-              <td>{p.amount}</td>
+              <td>
+                {p.isWeight ? `${p.amount.toFixed(2)} kg` : p.amount}
+              </td>
               <td className="product-cell">${p.price}</td>
               <td className="actions">
                 <button className="edit" onClick={() => handleEditClick(p)}>Ndrysho</button>
@@ -320,16 +322,19 @@ function EditProductForm({
               autoComplete="off"
             />
           </div>
+
           <div className="form-group">
-            <label>Sasia:</label>
+            <label>{product.isWeight ? 'Kilogramë' : 'Sasia'}:</label>
             <input
               type="number"
+              step={product.isWeight ? "0.01" : "1"}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
               required
               min={0}
             />
           </div>
+
           <div className="form-group">
             <label>Çmimi:</label>
             <input
@@ -341,6 +346,7 @@ function EditProductForm({
               min={0}
             />
           </div>
+
           <div className="modalButtonsEdit">
             <button type="submit" className="submitButton">Ruaj</button>
             <button type="button" className="cancelButton" onClick={onCancel}>Anulo</button>

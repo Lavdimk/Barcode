@@ -15,6 +15,8 @@ type Invoice = {
     price: number
     product: {
       name: string
+      isWeight?: boolean
+
     }
   }[]
 }
@@ -77,6 +79,11 @@ export default function HistoryPage() {
     setModalContent({ type: 'single', id })
     setShowDeleteModal(true)
   }
+
+  function roundToNearest05(value: number) {
+    return Math.round(value * 20) / 20;
+  }
+
 
   const confirmDelete = async () => {
     if (!modalContent) return
@@ -175,14 +182,23 @@ export default function HistoryPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {invoice.items.map((item, idx) => (
-                            <tr key={idx}>
-                              <td>{item.product.name}</td>
-                              <td>{item.amount}</td>
-                              <td>{item.price.toFixed(2)} €</td>
-                              <td>{(item.price * item.amount).toFixed(2)} €</td>
-                            </tr>
-                          ))}
+                          {invoice.items.map((item, idx) => {
+                            const isWeight = item.product?.isWeight;
+                            const total = item.price * item.amount;
+                            const roundedTotal = isWeight ? roundToNearest05(total) : total;
+
+                            return (
+                              <tr key={idx}>
+                                <td>{item.product.name}</td>
+                                <td>
+                                  {item.amount} {isWeight ? 'kg' : ''}
+                                </td>
+                                <td>{item.price.toFixed(2)} €</td>
+                                <td>{roundedTotal.toFixed(2)} €</td>
+                              </tr>
+                            );
+                          })}
+
                         </tbody>
                       </table>
                     </ul>

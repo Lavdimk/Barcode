@@ -1,0 +1,157 @@
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.addButton {
+    padding: 12px 20px;
+    border-radius: 20px;
+    background-color: #2d72d9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+}
+
+.addButton:hover {
+    background-color: #1a5bb8;
+}
+
+.dropdown {
+    position: absolute;
+    top: 110%;
+    left: auto;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.dropdownItem {
+    padding: 10px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 18px;
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
+
+.empty {
+    padding: 10px 16px;
+    color: #888;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    max-width: 90%;
+}
+
+.modalContent h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.modalContent input {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.confirmBtn {
+    background-color: #4caf50;
+    color: white;
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.cancelBtn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.modalError {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: -0.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.name {
+    font-family: Inter, sans-serif;
+}
+
+.dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.spinnerContainer {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

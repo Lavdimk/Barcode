@@ -1,19 +1,25 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { FadeLoader } from 'react-spinners'
+import React from 'react';
+import { FadeLoader } from 'react-spinners';
 
-const LoadingSpinner = () => {
+const LoadingSpinner = ({
+  height = 15,
+  width = 5,
+}: {
+  height?: number;
+  width?: number;
+}) => {
   return (
     <div style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100vh'
+      height: '100vh',
     }}>
-      <FadeLoader />
+      <FadeLoader height={height} width={width} />
     </div>
-  )
-}
+  );
+};
 
-export default LoadingSpinner
+export default LoadingSpinner;

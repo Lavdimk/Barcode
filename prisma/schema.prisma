@@ -11,8 +11,9 @@ model Product {
   id       Int    @id @default(autoincrement())
   barcode  String @unique
   name     String
-  amount    Int
+  amount    Float
   price    Float
+  isWeight  Boolean  @default(false)
   createdAt DateTime      @default(now())
 
  invoiceItems InvoiceItem[]
@@ -34,7 +35,7 @@ model InvoiceItem {
   product    Product   @relation(fields: [productId], references: [id])
   productId  Int
 
-  amount     Int
+  amount     Float
   price      Float
 }
 

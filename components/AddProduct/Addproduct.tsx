@@ -1,6 +1,7 @@
-'use client'
-import { useState } from 'react'
-import styles from './AddProduct.module.css'
+'use client';
+
+import { useState } from 'react';
+import styles from './AddProduct.module.css';
 
 export default function AddProduct({ onSuccess, onCancel }: {
   onSuccess?: () => void; onCancel?: () => void;
@@ -10,11 +11,12 @@ export default function AddProduct({ onSuccess, onCancel }: {
     name: '',
     amount: '',
     price: '',
-  })
-  const [message, setMessage] = useState('')
+    isWeight: false,
+  });
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const res = await fetch(`/api/products`, {
       method: 'POST',
@@ -22,93 +24,94 @@ export default function AddProduct({ onSuccess, onCancel }: {
       body: JSON.stringify({
         barcode: form.barcode,
         name: form.name,
-        amount: parseInt(form.amount),
+        amount: parseFloat(form.amount),
         price: parseFloat(form.price),
+        isWeight: form.isWeight,
       }),
-    })
+    });
 
     if (res.ok) {
-      setMessage('Produkti u shtua me sukses!')
-      setForm({ barcode: '', name: '', amount: '', price: '' })
-      if (onSuccess) onSuccess()
+      setMessage('Produkti u shtua me sukses!');
+      setForm({ barcode: '', name: '', amount: '', price: '', isWeight: false });
+      if (onSuccess) onSuccess();
     } else {
-      setMessage('Gabim gjatë shtimit të produktit.')
+      setMessage('Gabim gjatë shtimit të produktit.');
     }
-  }
+  };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content edit-modal">
-
         <h2>Shto Produkt</h2>
         <form onSubmit={handleSubmit} className="edit-form">
-
           <div className="form-group">
             <label>Emri:</label>
             <input
               value={form.name}
               type="text"
               placeholder="Emri i Produktit"
-
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
               autoComplete="off"
             />
           </div>
+
           <div className="form-group">
             <label>Barcode:</label>
             <input
               value={form.barcode}
               type="text"
               placeholder="Barcode i Produktit"
-
               onChange={(e) => setForm({ ...form, barcode: e.target.value })}
               required
               autoComplete="off"
             />
           </div>
+
           <div className="form-group">
-            <label>Sasia:</label>
+            <label>{form.isWeight ? 'Pesha (kg):' : 'Sasia:'}</label>
             <input
               value={form.amount}
               type="number"
-              placeholder="Sasia e Produktit"
-
+              step={form.isWeight ? "0.01" : "1"}
+              min={form.isWeight ? "0.01" : "1"}
+              placeholder={form.isWeight ? 'P.sh. 1.5 (kg)' : 'Sasia e Produktit'}
               onChange={(e) => setForm({ ...form, amount: e.target.value })}
               required
               autoComplete="off"
             />
           </div>
+
           <div className="form-group">
             <label>Cmimi:</label>
             <input
               value={form.price}
               type="number"
+              step="0.01"
+              min={"0.01"}
               placeholder="Cmimi i Produktit"
-
               onChange={(e) => setForm({ ...form, price: e.target.value })}
               required
               autoComplete="off"
             />
           </div>
 
+          <div className="form-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={form.isWeight}
+                onChange={(e) => setForm({ ...form, isWeight: e.target.checked })}
+              /> Produkt me peshë (kg)
+            </label>
+          </div>
+
           <div className={styles.modalButtons}>
-            <button type="submit" className={styles.submitButton}>
-              Shto
-            </button>
+            <button type="submit" className={styles.submitButton}>Shto</button>
             <button
               type="button"
               className={styles.cancelButton}
-              onClick={() => {
-                if (onCancel) {
-                  try {
-                    onCancel();
-                  } catch (err) {
-                    console.error('Gabim gjatë onCancel:', err);
-                  }
-                }
-              }}
-
+              onClick={() => onCancel?.()}
             >
               Anulo
             </button>
@@ -117,5 +120,5 @@ export default function AddProduct({ onSuccess, onCancel }: {
         {message && <p className={styles.message}>{message}</p>}
       </div>
     </div>
-  )
+  );
 }

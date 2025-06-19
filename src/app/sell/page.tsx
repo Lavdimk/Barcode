@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import './sell.css'
 import { Trash2, Pencil } from 'lucide-react'
 import { useNotificationStore } from '@/store/notificationStore'
+import AddWeightedProduct from '../../../components/AddWeightedProduct/AddWeightedProduct'
 
 
 type Product = {
@@ -13,6 +14,7 @@ type Product = {
   barcode: string
   price: number
   amount: number
+  isWeight?: boolean
   stockAmount?: number
 }
 
@@ -197,7 +199,14 @@ export default function SellPage() {
     }
   }
 
-  const totalPrice = productList.reduce((sum, p) => sum + p.amount * p.price, 0)
+  const totalPrice = productList.reduce((sum, p) => {
+    const total = p.amount * p.price;
+    return sum + (p.isWeight ? roundToNearest05(total) : total);
+  }, 0);
+  function roundToNearest05(value: number) {
+    return Math.round(value * 20) / 20;
+  }
+
 
   return (
     <div className="sell-container">
@@ -210,6 +219,22 @@ export default function SellPage() {
             onChange={(e) => setBarcode(e.target.value)}
             placeholder="Scan barcode..."
             className="sell-input"
+          />
+          <AddWeightedProduct
+            onProductAdd={(product, quantity) => {
+              setProductList((prev) => {
+                const existing = prev.find((p) => p.barcode === product.barcode);
+                if (existing) {
+                  return prev.map((p) =>
+                    p.barcode === product.barcode
+                      ? { ...p, amount: p.amount + quantity, stockAmount: product.amount }
+                      : p
+                  );
+                } else {
+                  return [...prev, { ...product, amount: quantity }];
+                }
+              });
+            }}
           />
 
           {error && <p className="sell-error">{error}</p>}
@@ -238,11 +263,15 @@ export default function SellPage() {
 
                   return (
                     <tr key={p.barcode + index} className={isOverstock ? 'row-overstock' : ''}>
-                      <td><span className="rounded-cell">{p.amount}</span></td>
+                      <td>
+                        <span className="rounded-cell">
+                          {p.amount} {p.isWeight ? 'kg' : ''}
+                        </span>
+                      </td>
                       <td>{p.name}</td>
                       <td><span className="rounded-cell">{p.price.toFixed(2)} €</span></td>
                       <td className="total-cell">
-                        {(p.amount * p.price).toFixed(2)} €
+                        {(p.isWeight ? roundToNearest05(p.amount * p.price) : p.amount * p.price).toFixed(2)} €
                         <span >
                           <button
                             onClick={() => {

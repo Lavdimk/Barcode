@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 export async function POST(req) {
   try {
-    const body = await req.json()
+    const body = await req.json();
 
     const product = await prisma.product.create({
       data: {
@@ -13,13 +13,14 @@ export async function POST(req) {
         name: body.name,
         amount: body.amount,
         price: body.price,
+        isWeight: body.isWeight ?? false,
       },
-    })
+    });
 
-    return new Response(JSON.stringify(product), { status: 201 })
+    return new Response(JSON.stringify(product), { status: 201 });
   } catch (error) {
-    console.error('Gabim API:', error)
-    return new Response('Gabim gjatë shtimit të produktit', { status: 500 })
+    console.error('Gabim API:', error);
+    return new Response('Gabim gjatë shtimit të produktit', { status: 500 });
   }
 }
 
@@ -30,6 +31,8 @@ export async function GET(req) {
     const searchQuery = searchParams.get('search') || '';
     const amount = searchParams.get('amount');
     const amountRange = searchParams.get('amountRange');
+    const isWeight = searchParams.get('isWeight');
+
 
     if (barcode) {
       const product = await prisma.product.findUnique({
@@ -47,7 +50,7 @@ export async function GET(req) {
     }
 
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const limit = parseInt(searchParams.get('limit') || '50');
     const skip = (page - 1) * limit;
     const where = { AND: [] };
 
@@ -59,6 +62,10 @@ export async function GET(req) {
         ],
       });
     }
+    if (isWeight === 'true') {
+      where.AND.push({ isWeight: true });
+    }
+
 
     if (amount === '0' && amountRange === '1-5') {
       where.AND.push({
