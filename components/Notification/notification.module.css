@@ -23,7 +23,7 @@
   position: absolute;
   top: 36px;
   right: 0;
-  width: 280px;
+  width: 450px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -61,25 +61,30 @@
   padding: 12px 16px;
   border-bottom: 1px solid #eee;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   font-size: 14px;
-}
-
-.item p {
-  margin: 0;
-  flex: 1;
-  padding-right: 8px;
 }
 
 .read {
   background-color: #f8f8f8;
-  color: #999;
 }
 
-.actions {
-  display: flex;
-  gap: 6px;
+.unread {
+  background-color: #e6f2ff;
+  font-weight: 600;  
+}
+
+.message {
+  margin: 0;
+  font-weight: 600;
+  color: #9f9a9a; 
+  word-break: break-word;
+  font-family: Inter, sans-serif;
+}
+
+.unread .message {
+  color: #555454;
 }
 
 .empty {
@@ -102,4 +107,43 @@
 
 .clearAll:hover {
   background-color: #f8f8f8;
+}
+
+.icon {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.15);
+}
+
+.notificationContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.leftSide {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.time {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.blueDot {
+  width: 8px;
+  height: 8px;
+  background-color: dodgerblue;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
